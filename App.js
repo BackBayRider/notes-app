@@ -6,53 +6,46 @@ import {
   Text,
   View
 } from 'react-native';
-import Main from './src/components/main.js';
+import Main from './src/components/Main.js';
+import Create from './src/components/Create.js';
 import { connect } from 'react-redux';
 
-import type { Action } from './src/types.js';
-import { init } from './src/actions.js';
+import type { PlainActionCreator } from './src/types.js';
+import { init, createNote } from './src/actions.js';
 import { view } from './src/selectors.js';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 type Props = {
   view: string,
-  init: () => Action,
+  init: PlainActionCreator,
+  createNote: PlainActionCreator,
 };
+
 class App extends Component<Props> {
   componentDidMount() {
     this.props.init();
   }
   render() {
+    const { view } = this.props;
+    let Child;
+
+    switch (view) {
+      case 'main':
+      Child = <Main createNote={this.props.createNote} />
+      break;
+      case 'create':
+      Child = <Create />
+      break;
+      default:
+      Child = <Main createNote={this.props.createNote} />
+    }
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Main />
+      <View>
+        {Child}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-});
 
 const mapState = state => ({
   view: view(state),
@@ -60,6 +53,7 @@ const mapState = state => ({
 
 const mapDispatch = {
   init,
+  createNote,
 };
 
 export default connect(mapState, mapDispatch)(App);

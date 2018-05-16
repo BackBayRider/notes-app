@@ -3,17 +3,16 @@ import { combineReducers } from 'redux-immutable';
 import { Map } from 'immutable';
 
 import type { Action } from './types.js';
+import {
+  CREATE_NOTE,
+} from './action-types.js';
 
-const defaultViewState = Map({
-  view: 'main'
-});
-
-type stateType = Map<string, string>;
-
-const view = (state: stateType = defaultViewState, action: Action): stateType => {
-  const { type, payload } = action;
+const view = (state: string = 'main', action: Action): string => {
+  const { type } = action;
 
   switch (type) {
+  case CREATE_NOTE:
+    return 'create';
   default:
     return state;
   };
