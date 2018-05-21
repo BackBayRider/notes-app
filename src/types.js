@@ -1,8 +1,26 @@
 /* @flow */
+import { Record } from 'immutable';
+import type { RecordFactory, RecordOf } from 'immutable';
 
-export type Action = {
-  +type: string,
-  payload?: Object | string
+export type PlainActionCreator = () => {
+  type: string
 };
 
-export type PlainActionCreator = () => Action;
+export type ActionCreator = (payload: Object) => {
+  type: string,
+  payload: Object
+};
+
+export type Note = {
+  id: string,
+  title: string,
+  content: string,
+  timestamp: number,
+};
+
+export const noteFactory: RecordFactory<Note> = Record({
+  id: null,
+  title: '',
+  content: '',
+  timestamp: Date.now(),
+});

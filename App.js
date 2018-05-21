@@ -7,17 +7,31 @@ import {
   View
 } from 'react-native';
 import Main from './src/components/Main.js';
+import ViewContainer from './src/components/View.js';
 import Create from './src/components/Create.js';
 import { connect } from 'react-redux';
 
-import type { PlainActionCreator } from './src/types.js';
-import { init, createNote } from './src/actions.js';
-import { view } from './src/selectors.js';
+import type {
+  PlainActionCreator,
+  ActionCreator,
+} from './src/types.js';
+import * as Actions from './src/actions.js';
+import { ROUTES } from './src/constants.js';
+import {
+  route,
+  view,
+  notes,
+} from './src/selectors.js';
 
 type Props = {
-  view: string,
+  route: $TODO,
+  notes: $TODO,
+  view: ?string,
   init: PlainActionCreator,
   createNote: PlainActionCreator,
+  returnHome: PlainActionCreator,
+  saveNote: ActionCreator,
+  viewNote: ActionCreator,
 };
 
 class App extends Component<Props> {
@@ -25,18 +39,31 @@ class App extends Component<Props> {
     this.props.init();
   }
   render() {
-    const { view } = this.props;
+    const { route } = this.props;
     let Child;
 
-    switch (view) {
-      case 'main':
-      Child = <Main createNote={this.props.createNote} />
-      break;
-      case 'create':
-      Child = <Create />
-      break;
+    const DefaultChild = <Main
+      notes={this.props.notes}
+      viewNote={this.props.viewNote}
+      createNote={this.props.createNote}
+    />;
+
+    switch (route) {
+      case ROUTES.HOME:
+        Child = DefaultChild;
+        break;
+      case ROUTES.VIEW:
+        Child = <ViewContainer
+          note={this.props.notes.get(this.props.view)}
+          returnHome={this.props.returnHome} />
+        break;
+      case ROUTES.CREATE:
+        Child = <Create
+          saveNote={this.props.saveNote}
+          returnHome={this.props.returnHome} />
+        break;
       default:
-      Child = <Main createNote={this.props.createNote} />
+        Child = DefaultChild;
     }
 
     return (
@@ -48,12 +75,17 @@ class App extends Component<Props> {
 }
 
 const mapState = state => ({
+  route: route(state),
   view: view(state),
+  notes: notes(state),
 });
 
 const mapDispatch = {
-  init,
-  createNote,
+  init: Actions.init,
+  createNote: Actions.createNote,
+  returnHome: Actions.viewHome,
+  saveNote: Actions.saveNote,
+  viewNote: Actions.viewNote,
 };
 
 export default connect(mapState, mapDispatch)(App);
