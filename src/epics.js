@@ -24,9 +24,13 @@ const saveNoteEpic = action$ => {
   return action$.pipe(
     ofType(SAVE_NOTE),
     pluck('payload'),
+    map(note => !note.id
+      ? noteFactory(note).set('id', uuid())
+      : noteFactory(note)
+    ),
     map(note => ({
       type: SAVE_NOTE_SUCCESS,
-      payload: noteFactory(note).set('id', uuid()),
+      payload: note,
     }))
   )
 };

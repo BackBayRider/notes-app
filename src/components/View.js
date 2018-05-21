@@ -15,7 +15,12 @@ type Props = {
 };
 export default class ViewContainer extends Component<Props> {
   handleEdit = () => {
-    console.log('editing note...');
+    const { note } = this.props;
+    this.props.editNote({
+      id: note.id,
+      title: note.title,
+      content: note.content,
+    });
   }
   render() {
     const { note } = this.props;

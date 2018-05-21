@@ -1,6 +1,8 @@
 /* @flow */
 import {
   INIT,
+  EDIT_NOTE,
+  DRAFT_NOTE,
   CREATE_NOTE,
   RETURN_HOME,
   SAVE_NOTE,
@@ -15,6 +17,8 @@ const p = (type: string): Object => (payload: Object) => ({
 });
 
 export const init = t(INIT);
+export const editNote = p(EDIT_NOTE);
+export const draftNote = p(DRAFT_NOTE);
 export const createNote = t(CREATE_NOTE);
 export const viewHome = t(RETURN_HOME);
 export const saveNote = p(SAVE_NOTE);

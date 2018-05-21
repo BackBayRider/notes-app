@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Main from './src/components/Main.js';
 import ViewContainer from './src/components/View.js';
-import Create from './src/components/Create.js';
+import Draft from './src/components/Draft.js';
 import { connect } from 'react-redux';
 
 import type {
@@ -55,10 +55,11 @@ class App extends Component<Props> {
       case ROUTES.VIEW:
         Child = <ViewContainer
           note={this.props.notes.get(this.props.view)}
+          editNote={this.props.editNote}
           returnHome={this.props.returnHome} />
         break;
       case ROUTES.CREATE:
-        Child = <Create
+        Child = <Draft
           saveNote={this.props.saveNote}
           returnHome={this.props.returnHome} />
         break;
@@ -86,6 +87,7 @@ const mapDispatch = {
   returnHome: Actions.viewHome,
   saveNote: Actions.saveNote,
   viewNote: Actions.viewNote,
+  editNote: Actions.editNote,
 };
 
 export default connect(mapState, mapDispatch)(App);

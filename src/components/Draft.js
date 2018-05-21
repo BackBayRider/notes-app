@@ -1,5 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View,
   Text,
@@ -12,6 +13,12 @@ import type {
   PlainActionCreator,
   ActionCreator,
 } from '../types.js';
+import { draftNote } from '../actions.js';
+import {
+  view,
+  draftTitle,
+  draftContent,
+} from '../selectors.js';
 
 type Props = {
   saveNote: ActionCreator,
@@ -33,19 +40,13 @@ const textarea = {
   borderWidth: 1,
 };
 
-const defaultState = () => ({
-  title: '',
-  content: '',
-  error: '',
-});
-
-export default class Create extends Component<Props, State> {
+class Create extends Component<Props, State> {
   constructor(props: Object) {
     super(props);
-    this.state = defaultState();
+    this.state = { error: null };
   }
   handleSave = () => {
-    const { title, content } = this.state;
+    const { title, content, editId, } = this.props;
     let error;
 
     if (!title.trim()) {
@@ -57,7 +58,7 @@ export default class Create extends Component<Props, State> {
     if (error) {
       this.setState({ error });
     } else {
-      this.props.saveNote({ title, content });
+      this.props.saveNote({ id: editId, title, content });
     }
 
   }
@@ -71,14 +72,14 @@ export default class Create extends Component<Props, State> {
           style={ textarea }
           multiline={false}
           placeholder='Title'
-          value={this.state.title}
-          onChangeText={title => this.setState({ title })} />
+          value={this.props.title}
+          onChangeText={title => this.props.draftNote({ field: 'title', text: title })} />
         <TextInput
           style={{ ...textarea, height: 160, marginBottom: 25 }}
           multiline={true}
           placeholder='Content'
-          value={this.state.content}
-          onChangeText={content => this.setState({ content })} />
+          value={this.props.content}
+          onChangeText={content => this.props.draftNote({ field: 'content', text: content })} />
         <Button
           title='Save'
           onPress={this.handleSave} />
@@ -109,3 +110,15 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+const mapState = state => ({
+  editId: view(state),
+  title: draftTitle(state),
+  content: draftContent(state),
+});
+
+const mapDispatch = {
+  draftNote,
+};
+
+export default connect(mapState, mapDispatch)(Create);

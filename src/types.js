@@ -15,12 +15,10 @@ export type Note = {
   id: string,
   title: string,
   content: string,
-  timestamp: number,
 };
 
 export const noteFactory: RecordFactory<Note> = Record({
   id: null,
   title: '',
   content: '',
-  timestamp: Date.now(),
 });
